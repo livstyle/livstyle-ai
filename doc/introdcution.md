@@ -9,3 +9,4 @@
 - 页面部署：将页面部署到github pages上，并设置自定义域名
 
 - 技术：HTML, CSS, JavaScript, Rust, AIScript
+- 要求：页面需要美观大方，简洁明了，能够展示出AI相关的信息，并且能够部署到github pages上，并设置自定义域名
