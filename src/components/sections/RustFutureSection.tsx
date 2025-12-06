@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Shield,
   Zap,
@@ -17,7 +15,7 @@ import {
   Workflow,
   Database,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 
 const rustAdvantages = [
   {
@@ -116,9 +114,42 @@ const rustUseCases = [
   },
 ];
 
+function useInView(ref: React.RefObject<HTMLElement | null>) {
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return isInView;
+}
+
 export default function RustFutureSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref);
+  const [barWidths, setBarWidths] = useState([0, 0, 0, 0]);
+
+  useEffect(() => {
+    if (isInView) {
+      const timer = setTimeout(() => {
+        setBarWidths([100, 100, 95, 100]);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView]);
 
   return (
     <section id="rust-future" className="relative py-32 overflow-hidden">
@@ -133,12 +164,7 @@ export default function RustFutureSection() {
 
       <div className="container mx-auto px-6 relative z-10" ref={ref}>
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
+        <div className={`text-center mb-20 transition-all duration-1000 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
             <Code2 className="w-5 h-5 text-orange-400" />
             <span className="text-orange-400 text-sm font-medium">Rust Language</span>
@@ -152,16 +178,15 @@ export default function RustFutureSection() {
           <p className="text-gray-400 text-lg max-w-3xl mx-auto">
             Rust 凭借其独特的安全性和性能优势，正在成为构建下一代 AI 基础设施的首选语言
           </p>
-        </motion.div>
+        </div>
 
         {/* Rust advantages */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
           {rustAdvantages.map((advantage, index) => (
-            <motion.div
+            <div
               key={advantage.title}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className={`transition-all duration-700 ${isInView ? "opacity-100 translate-x-0" : index % 2 === 0 ? "opacity-0 -translate-x-10" : "opacity-0 translate-x-10"}`}
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
               <Card variant="gradient" className="h-full">
                 <div className="flex items-start gap-5">
@@ -180,17 +205,12 @@ export default function RustFutureSection() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Rust AI Projects */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-24"
-        >
+        <div className={`mb-24 transition-all duration-1000 delay-300 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <h3 className="font-display text-2xl md:text-3xl font-bold text-center mb-4 text-white">
             Rust AI 生态系统
           </h3>
@@ -200,12 +220,10 @@ export default function RustFutureSection() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {rustAIProjects.map((project, index) => (
-              <motion.div
+              <div
                 key={project.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.4, delay: 0.4 + index * 0.08 }}
-                className="glass rounded-xl p-5 group hover:bg-white/5 transition-all duration-300"
+                className={`glass rounded-xl p-5 group hover:bg-white/5 transition-all duration-300 ${isInView ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                style={{ transitionDelay: `${400 + index * 80}ms` }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -222,47 +240,35 @@ export default function RustFutureSection() {
                 <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded">
                   {project.category}
                 </span>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Use Cases */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mb-16"
-        >
+        <div className={`mb-16 transition-all duration-1000 delay-500 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <h3 className="font-display text-2xl md:text-3xl font-bold text-center mb-12 text-white">
             Rust 在 AI 领域的应用场景
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {rustUseCases.map((useCase, index) => (
-              <motion.div
+              <div
                 key={useCase.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                className="glass rounded-2xl p-6 text-center group hover:border-orange-500/30 transition-colors"
+                className={`glass rounded-2xl p-6 text-center group hover:border-orange-500/30 transition-all duration-500 hover:scale-105 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+                style={{ transitionDelay: `${600 + index * 100}ms` }}
               >
                 <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <useCase.icon className="w-7 h-7 text-orange-400" />
                 </div>
                 <h4 className="font-bold text-white mb-2">{useCase.title}</h4>
                 <p className="text-gray-400 text-sm">{useCase.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Performance comparison */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="glass rounded-3xl p-8 md:p-12"
-        >
+        <div className={`glass rounded-3xl p-8 md:p-12 transition-all duration-1000 delay-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="flex-1">
               <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-6">
@@ -270,10 +276,10 @@ export default function RustFutureSection() {
               </h3>
               <div className="space-y-4">
                 {[
-                  { label: "内存安全漏洞", rust: "0%", other: "70%", better: true },
-                  { label: "运行时性能", rust: "100%", other: "60%", better: true },
-                  { label: "编译时错误检测", rust: "95%", other: "40%", better: true },
-                  { label: "并发安全性", rust: "100%", other: "50%", better: true },
+                  { label: "内存安全漏洞", rust: "0%", width: barWidths[0] },
+                  { label: "运行时性能", rust: "100%", width: barWidths[1] },
+                  { label: "编译时错误检测", rust: "95%", width: barWidths[2] },
+                  { label: "并发安全性", rust: "100%", width: barWidths[3] },
                 ].map((item, index) => (
                   <div key={item.label} className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -281,11 +287,9 @@ export default function RustFutureSection() {
                       <span className="text-orange-400 font-medium">Rust: {item.rust}</span>
                     </div>
                     <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={isInView ? { width: item.rust } : {}}
-                        transition={{ duration: 1, delay: 0.8 + index * 0.1 }}
-                        className="h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full"
+                      <div
+                        className="h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-1000"
+                        style={{ width: `${item.width}%`, transitionDelay: `${800 + index * 100}ms` }}
                       />
                     </div>
                   </div>
@@ -307,9 +311,8 @@ export default function RustFutureSection() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
-

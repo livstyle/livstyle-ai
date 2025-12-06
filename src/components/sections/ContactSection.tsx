@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Github, Mail, MessageCircle, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -27,9 +25,32 @@ const contactLinks = [
   },
 ];
 
+function useInView(ref: React.RefObject<HTMLElement | null>) {
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return isInView;
+}
+
 export default function ContactSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref);
 
   return (
     <section id="contact" className="relative py-32 overflow-hidden">
@@ -40,12 +61,7 @@ export default function ContactSection() {
 
       <div className="container mx-auto px-6 relative z-10" ref={ref}>
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
+        <div className={`text-center mb-16 transition-all duration-1000 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
             <MessageCircle className="w-5 h-5 text-cyan-400" />
             <span className="text-cyan-400 text-sm font-medium">联系我们</span>
@@ -59,21 +75,19 @@ export default function ContactSection() {
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             对 AI 和 Rust 感兴趣？欢迎与我交流探讨，一起探索技术的无限可能
           </p>
-        </motion.div>
+        </div>
 
         {/* Contact cards */}
         <div className="max-w-3xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             {contactLinks.map((link, index) => (
-              <motion.a
+              <a
                 key={link.label}
                 href={link.href}
                 target={link.href.startsWith("http") ? "_blank" : undefined}
                 rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                className="glass rounded-2xl p-6 group hover:bg-white/5 transition-all duration-300 flex items-center gap-5"
+                className={`glass rounded-2xl p-6 group hover:bg-white/5 transition-all duration-500 flex items-center gap-5 hover:scale-105 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+                style={{ transitionDelay: `${200 + index * 100}ms` }}
               >
                 <div
                   className={`w-14 h-14 rounded-xl bg-gradient-to-br ${link.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}
@@ -89,16 +103,13 @@ export default function ContactSection() {
                     <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
-              </motion.a>
+              </a>
             ))}
           </div>
 
           {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="glass rounded-3xl p-8 md:p-12 text-center relative overflow-hidden"
+          <div
+            className={`glass rounded-3xl p-8 md:p-12 text-center relative overflow-hidden transition-all duration-1000 delay-400 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5" />
             <div className="relative z-10">
@@ -130,10 +141,9 @@ export default function ContactSection() {
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
-

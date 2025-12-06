@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Brain,
   Cpu,
@@ -95,9 +93,32 @@ const futureVisions = [
   },
 ];
 
+function useInView(ref: React.RefObject<HTMLElement | null>) {
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return isInView;
+}
+
 export default function AIFutureSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref);
 
   return (
     <section id="ai-future" className="relative py-32 overflow-hidden">
@@ -109,12 +130,7 @@ export default function AIFutureSection() {
 
       <div className="container mx-auto px-6 relative z-10" ref={ref}>
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
+        <div className={`text-center mb-20 transition-all duration-1000 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
             <Brain className="w-5 h-5 text-cyan-400" />
             <span className="text-cyan-400 text-sm font-medium">人工智能</span>
@@ -129,16 +145,15 @@ export default function AIFutureSection() {
             人工智能正以前所未有的速度发展，从大语言模型到通用人工智能，
             我们正处于技术革命的最前沿
           </p>
-        </motion.div>
+        </div>
 
         {/* AI Topics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
           {aiTopics.map((topic, index) => (
-            <motion.div
+            <div
               key={topic.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className={`transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
               <Card variant="glow" className="h-full">
                 <CardHeader>
@@ -155,28 +170,21 @@ export default function AIFutureSection() {
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Future Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-16"
-        >
+        <div className={`mb-16 transition-all duration-1000 delay-300 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <h3 className="font-display text-2xl md:text-3xl font-bold text-center mb-12 text-white">
             AI 发展时间线
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {futureVisions.map((vision, index) => (
-              <motion.div
+              <div
                 key={vision.title}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.5 + index * 0.15 }}
-                className="glass rounded-2xl p-6 relative overflow-hidden group"
+                className={`glass rounded-2xl p-6 relative overflow-hidden group transition-all duration-500 hover:bg-white/5 ${isInView ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                style={{ transitionDelay: `${400 + index * 150}ms` }}
               >
                 {/* Glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -207,18 +215,13 @@ export default function AIFutureSection() {
                 {index < futureVisions.length - 1 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-cyan-500/50 to-transparent" />
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Key insight */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="glass rounded-3xl p-8 md:p-12 text-center relative overflow-hidden"
-        >
+        <div className={`glass rounded-3xl p-8 md:p-12 text-center relative overflow-hidden transition-all duration-1000 delay-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10" />
           <div className="relative z-10">
             <Sparkles className="w-12 h-12 text-cyan-400 mx-auto mb-6" />
@@ -228,9 +231,8 @@ export default function AIFutureSection() {
             </blockquote>
             <p className="text-gray-400">— AI 未来展望</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
-
