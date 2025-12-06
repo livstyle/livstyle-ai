@@ -1,55 +1,110 @@
 # LivStyle AI
 
-这是一个展示 AI 与 Rust 技术的个人网站项目。
+探索 AI 的未来与 Rust 语言的无限可能
 
-## 特点
+## 🌟 项目介绍
 
-- 深邃宇宙风格设计
-- 响应式布局
-- 平滑滚动效果
-- 页面加载动画
-- 毛玻璃效果
+这是一个展示人工智能未来发展与 Rust 编程语言在 AI 领域应用的现代化网站。采用深邃宇宙主题设计，融合 3D 星空背景和炫酷动画效果，带给用户沉浸式的科技体验。
 
-## 技术栈
+## ✨ 特性
 
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- Intersection Observer API
+- 🎨 **科技感设计** - 深邃宇宙主题，3D 星空背景
+- 🚀 **炫酷动画** - Framer Motion 驱动的流畅动画
+- 📱 **响应式布局** - 完美适配各种设备
+- ⚡ **极致性能** - Next.js 静态导出，加载极速
+- 🔧 **现代技术栈** - Next.js 15 + TypeScript + Tailwind CSS
 
-## 本地开发
+## 🛠️ 技术栈
 
-1. 克隆项目
+- **框架**: [Next.js 15](https://nextjs.org/) - React 全栈框架
+- **样式**: [Tailwind CSS](https://tailwindcss.com/) - 原子化 CSS
+- **3D 渲染**: [Three.js](https://threejs.org/) + [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber)
+- **动画**: [Framer Motion](https://www.framer.com/motion/)
+- **图标**: [Lucide Icons](https://lucide.dev/)
+- **语言**: TypeScript
+
+## 🚀 快速开始
+
+### 安装依赖
+
 ```bash
-git clone https://github.com/yourusername/livstyle-ai.git
+npm install
 ```
 
-2. 进入项目目录
+### 开发模式
+
 ```bash
-cd livstyle-ai
+npm run dev
 ```
 
-3. 使用本地服务器运行项目（例如使用 Python 的简单 HTTP 服务器）
+访问 [http://localhost:3000](http://localhost:3000) 查看效果。
+
+### 构建项目
+
 ```bash
-python -m http.server 8000
+npm run build
 ```
 
-4. 在浏览器中访问 `http://localhost:8000`
+静态文件将生成到 `out` 目录。
 
-## 部署到 GitHub Pages
+## 📦 部署
 
-1. 将代码推送到 GitHub 仓库
-2. 在仓库设置中启用 GitHub Pages
-3. 选择分支（通常是 `main` 或 `master`）作为部署源
-4. 等待几分钟，网站就会在 `https://yourusername.github.io/livstyle-ai` 上线
+本项目配置了 GitHub Actions 自动部署到 GitHub Pages：
 
-## 自定义域名
+1. 推送代码到 `main` 分支
+2. GitHub Actions 自动构建并部署
+3. 访问 https://livstyle.cn 查看网站
 
-1. 在仓库的 `docs` 文件夹中添加 `CNAME` 文件
-2. 在 `CNAME` 文件中添加你的域名
-3. 在域名提供商处添加相应的 DNS 记录
-4. 等待 DNS 生效（可能需要几分钟到几小时）
+### 自定义域名配置
 
-## 许可证
+1. `public/CNAME` 文件包含自定义域名配置
+2. 在域名服务商处添加 CNAME 记录指向 `<username>.github.io`
+3. 在 GitHub 仓库设置中启用 HTTPS
 
-MIT License 
+## 📁 项目结构
+
+```
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── globals.css         # 全局样式
+│   │   ├── layout.tsx          # 根布局
+│   │   └── page.tsx            # 主页面
+│   ├── components/
+│   │   ├── layout/             # 布局组件
+│   │   │   ├── Header.tsx
+│   │   │   └── Footer.tsx
+│   │   ├── sections/           # 页面区块
+│   │   │   ├── HeroSection.tsx
+│   │   │   ├── AIFutureSection.tsx
+│   │   │   ├── RustFutureSection.tsx
+│   │   │   └── ContactSection.tsx
+│   │   ├── three/              # Three.js 组件
+│   │   │   └── StarField.tsx
+│   │   └── ui/                 # UI 组件
+│   │       ├── Button.tsx
+│   │       └── Card.tsx
+│   └── lib/
+│       └── utils.ts            # 工具函数
+├── public/
+│   ├── CNAME                   # 自定义域名
+│   └── .nojekyll               # 禁用 Jekyll
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Actions 部署配置
+├── next.config.ts              # Next.js 配置
+├── tailwind.config.ts          # Tailwind CSS 配置
+└── package.json
+```
+
+## 📄 许可证
+
+MIT License
+
+## 👤 联系方式
+
+- **GitHub**: [github.com/livstyle](https://github.com/livstyle)
+- **Email**: livstylecn@gmail.com
+
+---
+
+© 2024 LivStyle AI. Made with ❤️ using Next.js & Rust
